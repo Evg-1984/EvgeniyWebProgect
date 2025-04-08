@@ -17,7 +17,6 @@ class Audio(SqlAlchemyBase, SerializerMixin):
     title = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     content = sqlalchemy.Column(sqlalchemy.BLOB, nullable=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
-    is_favorite = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     is_published = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
     is_single = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
