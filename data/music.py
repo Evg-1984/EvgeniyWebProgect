@@ -18,7 +18,6 @@ class Audio(SqlAlchemyBase, SerializerMixin):
     content = sqlalchemy.Column(sqlalchemy.BLOB, nullable=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     is_published = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
-    is_single = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     album_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("album.id"))
     user = orm.relationship('User')
