@@ -13,8 +13,8 @@ api = Api(app)
 parser = reqparse.RequestParser()
 parser.add_argument('title', required=True)
 parser.add_argument('content', required=True)
-parser.add_argument('is_private', required=True, type=bool)
 parser.add_argument('is_published', required=True, type=bool)
+parser.add_argument('album_id', required=True, type=int)
 parser.add_argument('user_id', required=True, type=int)
 
 
@@ -31,7 +31,7 @@ class AudioResource(Resource):
         session = db_session.create_session()
         audio = session.query(Audio).get(file_id)
         return jsonify({'news': audio.to_dict(
-            only=('title', 'content', 'user_id', 'is_private'))})
+            only=('title', 'content', 'user_id', 'album_id', 'is_published'))})
 
     def delete(self, file_id):
         abort_if_audiofile_not_found(file_id)
@@ -56,7 +56,8 @@ class AudioListResource(Resource):
             title=args['title'],
             content=args['content'],
             user_id=args['user_id'],
-            is_published=args['is_published']
+            is_published=args['is_published'],
+            album_id=args['album_id']
         )
         session.add(audio)
         session.commit()
