@@ -65,12 +65,12 @@ class AudioListResource(Resource):
 
 
 def main():
-    # для списка объектов
-    api.add_resource(news_resources.AudioListResource, '/api/v2/news')
-    # для одного объекта
-    api.add_resource(audio_resources.AudioResource, '/api/v2/news/<int:news_id>')
     app.run()
 
 
 if __name__ == '__main__':
+    # для списка объектов
+    api.add_resource(news_resources.AudioListResource, '/api/v2/news')
+    # для одного объекта
+    api.add_resource(audio_resources.AudioResource, '/api/v2/news/<int:news_id>')
     main()
