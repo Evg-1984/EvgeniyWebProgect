@@ -21,3 +21,4 @@ class Audio(SqlAlchemyBase, SerializerMixin):
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     album_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("album.id"))
     user = orm.relationship('User')
+    audio = orm.relationship("Audio", back_populates='user')
