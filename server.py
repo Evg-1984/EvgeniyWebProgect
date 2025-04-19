@@ -4,6 +4,10 @@ from werkzeug.utils import redirect
 from flask import make_response
 from flask_restful import reqparse, abort, Api, Resource
 import datetime
+from flask_wtf import FlaskForm
+from wtforms import PasswordField, StringField, TextAreaField, SubmitField, EmailField, BooleanField
+from wtforms.validators import DataRequired
+
 from data import db_session
 from data.music import Audio
 from data.user import User
