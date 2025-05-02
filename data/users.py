@@ -16,4 +16,4 @@ class User(SqlAlchemyBase):
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                      default=datetime.datetime.now)
-    news = orm.relationship("Files", back_populates='user')
+    news = orm.relationship("Audio", back_populates='user')
