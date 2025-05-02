@@ -2,15 +2,9 @@ import datetime
 import sqlalchemy
 from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
-from sqlalchemy_serializer import SerializerMixin
 
 
-categories = orm.relationship("Category",
-                          secondary="association",
-                          backref="music")
-
-
-class Audio(SqlAlchemyBase, SerializerMixin):
+class Audio(SqlAlchemyBase):
     __tablename__ = 'music'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
@@ -21,5 +15,3 @@ class Audio(SqlAlchemyBase, SerializerMixin):
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     album_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("album.id"))
     user = orm.relationship('User')
-    audio = orm.relationship("Audio", back_populates='user')
-    audio = orm.relationship("Audio", back_populates='user')
