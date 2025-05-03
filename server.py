@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from data import db_session
 from data.users import User
 from data.music import Audio
@@ -6,16 +6,15 @@ from data.music import Audio
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
+@app.route("/")
+def index():
+    db_sess = db_session.create_session()
+    news = db_sess.query(Audio)
+    return render_template("index.html", news=news)
 
 def main():
     db_session.global_init("db/blogs.db")
-    user = User()
-    user.name = "Пользователь 1"
-    user.about = "биография пользователя 1"
-    user.email = "email@email.ru"
     db_sess = db_session.create_session()
-    db_sess.add(user)
-    db_sess.commit()
     app.run()
 
 
