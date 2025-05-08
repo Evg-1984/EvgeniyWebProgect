@@ -1,4 +1,4 @@
-from flask import Flask, render_template, make_response, request, session
+from flask import Flask, render_template, make_response, request, session, redirect
 from data import db_session
 from data.users import User
 from data.music import Audio
@@ -76,8 +76,7 @@ def reqister():
                                    message="Такой пользователь уже есть")
         user = User(
             name=form.name.data,
-            email=form.email.data,
-            about=form.about.data
+            email=form.email.data
         )
         user.set_password(form.password.data)
         db_sess.add(user)
