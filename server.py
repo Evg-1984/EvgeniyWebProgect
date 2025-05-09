@@ -5,6 +5,8 @@ from data.music import Audio
 from forms.user import RegisterForm, LoginForm
 import datetime
 from flask_login import LoginManager, login_user
+from flask_restful import reqparse, abort, Api, Resource
+from blueprints import music_api
 
 
 app = Flask(__name__)
@@ -12,6 +14,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(
     days=365
 )
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+api = Api(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -93,7 +96,7 @@ def index():
 
 def main():
     db_session.global_init("db/blogs.db")
-    db_sess = db_session.create_session()
+    app.register_blueprint(music_api.blueprint)
     app.run()
 
 
