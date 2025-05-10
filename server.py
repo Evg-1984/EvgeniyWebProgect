@@ -1,4 +1,4 @@
-from flask import Flask, render_template, make_response, request, session, redirect
+from flask import Flask, render_template, make_response, request, session, redirect, jsonify
 from data import db_session
 from data.users import User
 from data.music import Audio
@@ -17,6 +17,18 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 api = Api(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+from flask import make_response
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+@app.errorhandler(400)
+def bad_request(_):
+    return make_response(jsonify({'error': 'Bad Request'}), 400)
 
 
 @app.route('/login', methods=['GET', 'POST'])
