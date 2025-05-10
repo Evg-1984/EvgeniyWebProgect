@@ -2,9 +2,10 @@ import datetime
 import sqlalchemy
 from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
+from sqlalchemy_serializer import SerializerMixin
 
 
-class Audio(SqlAlchemyBase):
+class Audio(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'music'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)

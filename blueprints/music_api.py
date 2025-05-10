@@ -1,5 +1,6 @@
 import flask
 
+from flask import jsonify
 from data import db_session
 from data.music import Audio
 
@@ -12,4 +13,12 @@ blueprint = flask.Blueprint(
 
 @blueprint.route('/api/music')
 def get_music():
-    return "Обработчик в music_api"
+    db_sess = db_session.create_session()
+    music = db_sess.query(Audio).all()
+    return jsonify(
+        {
+            'music':
+                [item.to_dict(only=('title', 'content', 'user.name'))
+                 for item in music]
+        }
+    )
