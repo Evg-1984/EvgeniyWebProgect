@@ -31,6 +31,44 @@ def bad_request(_):
     return make_response(jsonify({'error': 'Bad Request'}), 400)
 
 
+class AudioResource(Resource):
+    def get(self, file_id):
+        abort_if_file_not_found(file_id)
+        session = db_session.create_session()
+        music = session.query(Audio).get(file_id)
+        return jsonify({'music': music.to_dict(
+            only=('title', 'content', 'user_id', 'is_private'))})
+
+
+class AudioListResource(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('title', required=True)
+        self.parser.add_argument('content', required=True)
+        self.parser.add_argument('is_published', required=True, type=bool)
+        self.parser.add_argument('user_id', required=True, type=int)
+
+    def post(self):
+        args = self.parser.parse_args()
+        session = db_session.create_session()
+        music = Audio(
+            title=args['title'],
+            content=args['content'],
+            user_id=args['user_id'],
+            is_published=args['is_published']
+        )
+        session.add(music)
+        session.commit()
+        return jsonify({'id': music.id})
+
+
+def abort_if_file_not_found(file_id):
+    session = db_session.create_session()
+    music = session.query(Audio).get(file_id)
+    if not music:
+        abort(404, message=f"File {file_id} not found")
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -108,6 +146,8 @@ def index():
 
 def main():
     db_session.global_init("db/blogs.db")
+    api.add_resource(AudioListResource, '/api/v2/news')
+    api.add_resource(AudioResource, '/api/v2/news/<int:news_id>')
     app.register_blueprint(music_api.blueprint)
     app.run()
 
