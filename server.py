@@ -4,7 +4,7 @@ from data.users import User
 from data.music import Audio
 from forms.user import RegisterForm, LoginForm
 import datetime
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, logout_user, login_required
 from flask_restful import reqparse, abort, Api, Resource
 from blueprints import music_api
 
@@ -20,6 +20,14 @@ login_manager.init_app(app)
 
 
 from flask import make_response
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
+
 
 @app.errorhandler(404)
 def not_found(error):
@@ -145,7 +153,7 @@ def index():
     return render_template("index.html", news=news)
 
 def main():
-    db_session.global_init("db/blogs.db")
+    #db_session.global_init("db/blogs.db")
     api.add_resource(AudioListResource, '/api/v2/news')
     api.add_resource(AudioResource, '/api/v2/news/<int:news_id>')
     app.register_blueprint(music_api.blueprint)
