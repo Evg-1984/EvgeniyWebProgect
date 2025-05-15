@@ -1,4 +1,4 @@
-from flask import Flask, render_template, make_response, request, session, redirect, jsonify
+from flask import Flask, render_template, make_response, request, session, redirect, jsonify, send_file
 from data import db_session
 from data.users import User
 from data.music import Audio
@@ -7,6 +7,7 @@ import datetime
 from flask_login import LoginManager, login_user, logout_user, login_required
 from flask_restful import reqparse, abort, Api, Resource
 from blueprints import music_api
+from io import BytesIO
 
 
 app = Flask(__name__)
@@ -152,24 +153,37 @@ def index():
     news = db_sess.query(Audio)
     return render_template("index.html", news=news)
 
+
+@app.route("/play/<int:audio_id>")
+def play(audio_id):
+    db_sess = db_session.create_session()
+    audio = db_sess.query(Audio).get(audio_id)
+    return send_file(
+        BytesIO(audio.audio_data),
+        mimetype="audio/mpeg",
+        as_attachment=False
+    )
+
+
+
 def main():
     db_session.global_init("db/blogs.db")
     db_sess = db_session.create_session()
-    user = db_sess.query(User).filter(User.id == 1).first()
-    with open('Finntroll_-_Bakom_Varje_Fura_47889511.mp3', 'rb') as f:
-        mp3_data = f.read()
-
-    audio = Audio(
-        title="Bakom Varje Fura",
-        content=mp3_data,
-        album="Bakom Varje Fura",
-        artist="Fintroll",
-        user=user
-    )
-    db_sess.add(audio)
-    db_sess.commit()
-    api.add_resource(AudioListResource, '/api/v2/news')
-    api.add_resource(AudioResource, '/api/v2/news/<int:news_id>')
+    # user = db_sess.query(User).filter(User.id == 1).first()
+    # with open('Finntroll_-_Bakom_Varje_Fura_47889511.mp3', 'rb') as f:
+    #     mp3_data = f.read()
+    #
+    # audio = Audio(
+    #     title="Bakom Varje Fura",
+    #     content=mp3_data,
+    #     album="Bakom Varje Fura",
+    #     artist="Fintroll",
+    #     user=user
+    # )
+    # db_sess.add(audio)
+    # db_sess.commit()
+    api.add_resource(AudioListResource, '/api/v2/music')
+    api.add_resource(AudioResource, '/api/v2/music/<int:news_id>')
     app.register_blueprint(music_api.blueprint)
     app.run()
 
