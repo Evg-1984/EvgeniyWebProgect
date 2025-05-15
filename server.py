@@ -153,7 +153,21 @@ def index():
     return render_template("index.html", news=news)
 
 def main():
-    #db_session.global_init("db/blogs.db")
+    db_session.global_init("db/blogs.db")
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.id == 1).first()
+    with open('Finntroll_-_Bakom_Varje_Fura_47889511.mp3', 'rb') as f:
+        mp3_data = f.read()
+
+    audio = Audio(
+        title="Bakom Varje Fura",
+        content=mp3_data,
+        album="Bakom Varje Fura",
+        artist="Fintroll",
+        user=user
+    )
+    db_sess.add(audio)
+    db_sess.commit()
     api.add_resource(AudioListResource, '/api/v2/news')
     api.add_resource(AudioResource, '/api/v2/news/<int:news_id>')
     app.register_blueprint(music_api.blueprint)
