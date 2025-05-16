@@ -4,17 +4,35 @@
 <h1>Новое</h1>
 {% for item in news%}
 <div class="col-md6 border rounded">
-    <script>
-
-    </script>
     <p>
-        <audio id="audioPlayer" controls ></audio>
-        <h3><a class="btn btn-success" href="/api/v2/music/{{item.id}}/play"> > </a>
+        <h3><a href="/play/1"> > </a>
         {{item.title}} | Исполнитель: {{item.artist}} | Альбом: {{item.album}}</h3>
         <div>
             Добавил(а) - {{item.user.name}}, Дата загрузки - {{item.created_date}}
         </div>
     </p>
+    <script>
+        const audioBlob = {{item.content}};
+
+        // 3. Создаем URL для BLOB-объекта
+        const audioUrl = URL.createObjectURL(audioBlob);
+
+        // 4. Получаем элемент audio
+        const audioPlayer = document.getElementById('audioPlayer');
+
+        // 5. Устанавливаем источник для аудиоплеера
+        audioPlayer.src = audioUrl;
+
+        // 6. Очищаем память при завершении воспроизведения
+        audioPlayer.addEventListener('ended', () => {
+            URL.revokeObjectURL(audioUrl);
+        });
+
+        // 7. Обработчик ошибок воспроизведения
+        audioPlayer.addEventListener('error', () => {
+            console.error("Ошибка воспроизведения аудио");
+        });
+    </script>
 </div>
 {% endfor %}
 {% endblock %}

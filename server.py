@@ -150,8 +150,8 @@ def reqister():
 @app.route("/")
 def index():
     db_sess = db_session.create_session()
-    news = db_sess.query(Audio)
-    return render_template("index.html", news=news)
+    music = db_sess.query(Audio)
+    return render_template("index.html", news=music)
 
 
 @app.route("/play/<int:audio_id>")
@@ -159,16 +159,15 @@ def play(audio_id):
     db_sess = db_session.create_session()
     audio = db_sess.query(Audio).get(audio_id)
     return send_file(
-        BytesIO(audio.audio_data),
+        BytesIO(audio.content),
         mimetype="audio/mpeg",
         as_attachment=False
     )
 
 
-
 def main():
     db_session.global_init("db/blogs.db")
-    db_sess = db_session.create_session()
+    # db_sess = db_session.create_session()
     # user = db_sess.query(User).filter(User.id == 1).first()
     # with open('Finntroll_-_Bakom_Varje_Fura_47889511.mp3', 'rb') as f:
     #     mp3_data = f.read()
