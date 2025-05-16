@@ -18,6 +18,8 @@ app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(
     days=365
 )
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+app.config['UPLOAD_FOLDER'] = 'temp_uploads'
+app.config['ALLOWED_EXTENSIONS'] = {'mp3', 'wav', 'ogg', 'aac'}
 api = Api(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -169,10 +171,6 @@ def play(audio_id):
     )
 
 
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'mp3', 'wav', 'ogg'}
-
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -184,19 +182,24 @@ def add():
     form = AddForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        filename = secure_filename(form.path.data.filename)
-        form.path.data.save('uploads/' + filename)
-        with open(form.path.data, 'rb') as f:
-            mp3_data = f.read()
+        file = form.audio_file.data
+        filename = secure_filename(file.filename)
+
+        audio_data = file.read()
         user = current_user
+        artist = form.artist.data
+        # if not artist:
+        #     artist = "Неизвестен"
+        album = form.album.data
+        # if not album:
+        #     album = "Сингл"
         audio = Audio(
             title=form.title.data,
-            content=mp3_data,
-            album=form.album.data,
-            artist=form.artist.data,
+            content=audio_data,
+            album=album,
+            artist=artist,
             user=user
         )
-        current_user.files.append(audio)
         db_sess.add(audio)
         db_sess.commit()
         return redirect('/')

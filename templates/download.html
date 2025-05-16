@@ -9,7 +9,7 @@
 
 {% block content %}
 <h1>Загрузить Файл</h1>
-<form action="" method="post">
+<form method="post" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <p>
         {{ form.title.label }}<br>
@@ -39,13 +39,7 @@
         {% endfor %}
     </p>
     <p>
-        {{ form.path.label }}<br>
-        {{ form.path(class="form-control") }}<br>
-        {% for error in form.path.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
+        {{ form.audio_file.label }} {{ form.audio_file() }}
     </p>
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     {{message}}
