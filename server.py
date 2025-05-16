@@ -18,8 +18,6 @@ app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(
     days=365
 )
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-app.config['UPLOAD_FOLDER'] = 'temp_uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'mp3', 'wav', 'ogg', 'aac'}
 api = Api(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -171,11 +169,6 @@ def play(audio_id):
     )
 
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
-
-
 @app.route("/add", methods=['GET', 'POST'])
 @login_required
 def add():
@@ -186,21 +179,20 @@ def add():
         filename = secure_filename(file.filename)
 
         audio_data = file.read()
-        user = current_user
-        artist = form.artist.data
-        # if not artist:
-        #     artist = "Неизвестен"
-        album = form.album.data
-        # if not album:
-        #     album = "Сингл"
+        album, artist = form.album.data, form.artist.data
+        if not album:
+            album = "Сингл"
+        if not artist:
+            artist = "Неизвестен"
         audio = Audio(
             title=form.title.data,
             content=audio_data,
             album=album,
             artist=artist,
-            user=user
+            user=current_user
         )
-        db_sess.add(audio)
+        current_user.files.append(audio)
+        db_sess.merge(current_user)
         db_sess.commit()
         return redirect('/')
     return render_template('download.html', title='Добавление музыки',
