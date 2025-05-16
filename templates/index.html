@@ -7,15 +7,15 @@
     <script>
         function sendDataToParent() {
             const params = {
-                userid: ${item.id}
+                userid: 1
             };
 
             // Вызываем функцию в родительском окне
-            window.parent.PlayMusic(params);
+            window.parent.PlayAudio(params);
         }
     </script>
     <p>
-        <h3><button id="PlayMusic"> > </button>
+        <h3><button id="Play" onclick="playAudio({{item.id}})"> > </button>
         {{item.title}} | Исполнитель: {{item.artist}} | Альбом: {{item.album}}</h3>
         <div>
             Добавил(а) - {{item.user.name}}, Дата загрузки - {{item.created_date}}

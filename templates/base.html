@@ -31,13 +31,12 @@
         <audio id="audioPlayer" controls ></audio>
         <p></p>
         <script>
-        function playAudio(params) {
-            const player = document.getElementById('audioPlayer');
-            player.src = `/play/${params.userid}`;
-            player.load();  // Обязательно для динамической смены источника
-            player.play();
-          }
-
+             function playAudio(id) {
+                const player = document.getElementById('audioPlayer');
+                player.src = `/play/${id}`;
+                player.load();  // Обязательно для динамической смены источника
+                player.play();
+              }
         </script>
     </nav>
 </header>
