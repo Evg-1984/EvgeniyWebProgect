@@ -4,10 +4,13 @@ from data.users import User
 from data.music import Audio
 from forms.user import RegisterForm, LoginForm
 import datetime
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_restful import reqparse, abort, Api, Resource
 from blueprints import music_api
 from io import BytesIO
+from werkzeug.utils import secure_filename
+from forms.downloading import AddForm
+import os
 
 
 app = Flask(__name__)
@@ -161,25 +164,48 @@ def play(audio_id):
     return send_file(
         BytesIO(audio.content),
         mimetype="audio/mpeg",
-        as_attachment=False
+        as_attachment=False,
+        download_name=f'{audio.artist} - {audio.title}.mp3'
     )
+
+
+app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['ALLOWED_EXTENSIONS'] = {'mp3', 'wav', 'ogg'}
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+
+@app.route("/add", methods=['GET', 'POST'])
+@login_required
+def add():
+    form = AddForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        filename = secure_filename(form.path.data.filename)
+        form.path.data.save('uploads/' + filename)
+        with open(form.path.data, 'rb') as f:
+            mp3_data = f.read()
+        user = current_user
+        audio = Audio(
+            title=form.title.data,
+            content=mp3_data,
+            album=form.album.data,
+            artist=form.artist.data,
+            user=user
+        )
+        current_user.files.append(audio)
+        db_sess.add(audio)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('download.html', title='Добавление музыки',
+                           form=form)
 
 
 def main():
     db_session.global_init("db/blogs.db")
-    # db_sess = db_session.create_session()
-    # user = db_sess.query(User).filter(User.id == 1).first()
-    # with open('Король и Шут — Ели мясо мужики (www.lightaudio.ru).mp3', 'rb') as f:
-    #     mp3_data = f.read()
-    #
-    # audio = Audio(
-    #     title="Ели мясо мужики",
-    #     content=mp3_data,
-    #     artist="Король и Шут(КиШ)",
-    #     user=user
-    # )
-    # db_sess.add(audio)
-    # db_sess.commit()
     api.add_resource(AudioListResource, '/api/v2/music')
     api.add_resource(AudioResource, '/api/v2/music/<int:news_id>')
     app.register_blueprint(music_api.blueprint)

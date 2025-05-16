@@ -16,6 +16,7 @@
         {% if current_user.is_authenticated %}
             <p>
                 <a class="btn btn-primary " href="/add">Загрузить музыку</a>
+
                 <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
             </p>
         {% else %}
@@ -28,7 +29,9 @@
     </nav>
     <nav class="navbar navbar-light bg-light fixed-bottom">
         <p></p>
-        <audio id="audioPlayer" controls ></audio>
+        <audio id="audioPlayer" controls >
+            <source type="audio/mpeg" download>
+        </audio>
         <p></p>
         <script>
              function playAudio(id) {
