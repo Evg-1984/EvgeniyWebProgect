@@ -169,14 +169,13 @@ def main():
     db_session.global_init("db/blogs.db")
     # db_sess = db_session.create_session()
     # user = db_sess.query(User).filter(User.id == 1).first()
-    # with open('Finntroll_-_Bakom_Varje_Fura_47889511.mp3', 'rb') as f:
+    # with open('Король и Шут — Ели мясо мужики (www.lightaudio.ru).mp3', 'rb') as f:
     #     mp3_data = f.read()
     #
     # audio = Audio(
-    #     title="Bakom Varje Fura",
+    #     title="Ели мясо мужики",
     #     content=mp3_data,
-    #     album="Bakom Varje Fura",
-    #     artist="Fintroll",
+    #     artist="Король и Шут(КиШ)",
     #     user=user
     # )
     # db_sess.add(audio)
