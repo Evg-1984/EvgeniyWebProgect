@@ -4,24 +4,17 @@
 <h1>Новое</h1>
 {% for item in news%}
 <div class="col-md6 border rounded">
+    <script>
+
+    </script>
     <p>
-        <h3>{{item.title}} | Исполнитель: {{item.artist}} | Альбом: {{item.album}} <audio id="audioPlayer" controls></audio></h3>
+        <audio id="audioPlayer" controls ></audio>
+        <h3><a class="btn btn-success" href="/api/v2/music/{{item.id}}/play"> > </a>
+        {{item.title}} | Исполнитель: {{item.artist}} | Альбом: {{item.album}}</h3>
         <div>
             Добавил(а) - {{item.user.name}}, Дата загрузки - {{item.created_date}}
         </div>
     </p>
 </div>
-<script>
-async function playAudio(audioId) {
-  const response = await fetch(`/play/${audioId}`);
-  const blob = await response.blob();
-  const audioUrl = URL.createObjectURL(blob);
-
-  const player = document.getElementById('audioPlayer');
-  player.src = audioUrl;
-  player.play();
-}
-playAudio(1)
-</script>
 {% endfor %}
 {% endblock %}
