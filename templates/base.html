@@ -12,7 +12,7 @@
 <body>
 <header>
     <nav class="navbar navbar-light bg-light">
-        <p></p>
+        <p><a class="btn btn-primary " href="/">На главную</a></p>
         {% if current_user.is_authenticated %}
             <p>
                 <a class="btn btn-primary " href="/add">Загрузить музыку</a>
@@ -46,6 +46,9 @@
 <!-- Begin page content -->
 <main role="main" class="container">
     {% block content %}{% endblock %}
+    <br>
+    <br>
+    <br>
 </main>
 </body>
 </html>

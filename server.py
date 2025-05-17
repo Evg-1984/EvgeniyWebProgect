@@ -176,8 +176,6 @@ def add():
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         file = form.audio_file.data
-        filename = secure_filename(file.filename)
-
         audio_data = file.read()
         album, artist = form.album.data, form.artist.data
         if not album:
